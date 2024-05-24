@@ -1,0 +1,5 @@
+---
+# Defaults settings for uamsclient formula
+config:
+  uams_local_pkg_path: "/tmp/uams"
+  install_pkg_url: "https://agent-binaries.cloud.solarwinds.com/uams/latest"
