@@ -11,7 +11,6 @@ commands:
     steps:
       - run: if [ -d "/opt/solarwinds/uamsclient" ]; then exit 1; fi
 
-
   prepare-docker-centos:
     steps:
       - run: |
@@ -32,6 +31,7 @@ commands:
           apt update
           apt install curl -y
           apt install apt-utils -y
+          apt install procps -y
   prepare-docker-debian-stretch:
     steps:
       - run: |
@@ -175,18 +175,6 @@ jobs:
       - install-client-container
       - verify-install-container
 
-  run-debian-buster:
-    docker:
-      - image: debian:buster
-    steps:
-      - checkout
-      - prepare-docker-debian
-      - install-saltstack-script
-      - prepare-saltstack-container
-      - test-saltstack-container
-      - install-client-container
-      - verify-install-container
-
   run-debian-bullseye:
     docker:
       - image: debian:bullseye
@@ -211,9 +199,9 @@ jobs:
       - install-client-container
       - verify-install-container
 
-  run-centos-7:
+  run-centos-8:
     docker:
-      - image: centos:centos7
+      - image: centos:centos8
     steps:
       - checkout
       - prepare-docker-centos
@@ -299,10 +287,9 @@ workflows:
       - run-ubuntu-lunar
       - run-ubuntu-jammy
       - run-debian-stretch
-      - run-debian-buster
       - run-debian-bullseye
       - run-debian-bookworm
-      - run-centos-7
+      - run-centos-8
       - run-fedora-32
       - run-fedora-36
       - run-fedora-38

@@ -1,10 +1,8 @@
 {% from "map.jinja" import pkg_manager, pkg_type, config with context %}
 
-
 print_config_variables:
   cmd.run:
     - name: echo "install_pkg_url, {{ config.install_pkg_url }}, uams_local_pkg_path, {{ config.uams_local_pkg_path }}"
-
 
 {% set supported_distros = {
     'Amazon': 2,

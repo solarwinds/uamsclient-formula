@@ -9,10 +9,10 @@
 include:
   - validation 
 
-{% if uams_access_token == 'n/a' %}
+{% if uams_access_token | length < 70 %}
 failure:
   test.fail_without_changes:
-    - name: "Please provide access token using your pillar"
+    - name: "Please provide correct access token using your pillar"
     - failhard: True
 {% endif %}
 
@@ -23,9 +23,11 @@ uams_local_pkg_path:
     - makedirs: True
 
 download_installation_package:
-  cmd.run:
-    - name: "curl -o {{ config.uams_local_pkg_path }}/uamsclient.{{ pkg_type }} {{ config.install_pkg_url }}/uamsclient.{{ pkg_type }}"
-    - unless: "test -f {{ config.uams_local_pkg_path }}/uamsclient.{{ pkg_type }}"
+  file.managed:
+    - name: "{{ config.uams_local_pkg_path }}/uamsclient.{{ pkg_type }}"
+    - source: "{{ config.install_pkg_url }}/uamsclient.{{ pkg_type }}"
+    - source_hash: "{{ config.install_pkg_url }}/uamsclient.{{ pkg_type }}.sha256"
+
 
 setting_envs:
    environ.setenv:
@@ -54,15 +56,7 @@ uamsclient_service_running:
   service.running:
     - name: uamsclient.service
     - enable: True
-    # - retry:
-    #     attempts: 8
-    #     interval: 2
 {% endif %}
-
-remove_uams_directory:
-  file.absent:
-    - name: {{ config.uams_local_pkg_path }}
-    - recurse: True
 
 {% if is_container != 'true' %}
 print_service_status:
