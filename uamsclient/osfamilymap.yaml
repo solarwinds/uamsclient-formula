@@ -1,0 +1,5 @@
+---
+# Placeholder for different OS settings
+Debian:
+  uams_local_pkg_path: "/tmp/uams"
+

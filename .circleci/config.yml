@@ -1,0 +1,298 @@
+version: 2.1
+
+commands:
+  verify-install-container:
+    steps:
+      - run: /opt/solarwinds/uamsclient/sbin/uamsclient version
+  verify-install-vm:
+    steps:
+      - run: ps -aux | grep "uamsclient start" | grep -v grep
+  verify-uninstall:
+    steps:
+      - run: if [ -d "/opt/solarwinds/uamsclient" ]; then exit 1; fi
+
+  prepare-docker-centos:
+    steps:
+      - run: |
+          yum -y update
+
+  prepare-docker-ubuntu:
+    steps:
+      - run: |
+          export DEBIAN_FRONTEND=noninteractive
+          export LANG=C.UTF-8
+          export LC_ALL=C.UTF-8
+          apt update
+          apt install curl -y
+          apt install apt-utils -y
+  prepare-docker-debian:
+    steps:
+      - run: |
+          apt update
+          apt install curl -y
+          apt install apt-utils -y
+          apt install procps -y
+  prepare-docker-debian-stretch:
+    steps:
+      - run: |
+          mkdir /etc/apt/keyrings
+          sed -i -e 's/deb.debian.org/archive.debian.org/g' -e 's|security.debian.org|archive.debian.org/|g' -e '/stretch-updates/d' /etc/apt/sources.list
+          apt update
+          apt install curl -y
+          apt install apt-utils -y
+          apt-get install apt-transport-https ca-certificates
+
+  install-saltstack-ubuntu:
+    steps:
+      - run: |        
+          curl -fsSL -o /etc/apt/keyrings/salt-archive-keyring-2023.gpg https://repo.saltproject.io/salt/py3/ubuntu/22.04/amd64/SALT-PROJECT-GPG-PUBKEY-2023.gpg
+          echo "deb [signed-by=/etc/apt/keyrings/salt-archive-keyring-2023.gpg arch=amd64] https://repo.saltproject.io/salt/py3/ubuntu/22.04/amd64/latest jammy main" | tee /etc/apt/sources.list.d/salt.list
+          apt update
+          apt-get install salt-minion -y
+  install-saltstack-script:
+    steps:
+      - run: |
+          curl -o bootstrap-salt.sh -L https://bootstrap.saltproject.io
+          chmod +x bootstrap-salt.sh
+          ./bootstrap-salt.sh -M -X
+  install-saltstack-script-vm:
+    steps:
+      - run: |
+          curl -o bootstrap-salt.sh -L https://bootstrap.saltproject.io
+          chmod +x bootstrap-salt.sh
+          sudo ./bootstrap-salt.sh -M -X
+  install-saltstack-fedora:
+    steps:
+      - run: |
+          rpm --import https://repo.saltproject.io/salt/py3/fedora/38/x86_64/SALT-PROJECT-GPG-PUBKEY-2023.pub
+          curl -fsSL https://repo.saltproject.io/salt/py3/fedora/38/x86_64/latest.repo | tee /etc/yum.repos.d/salt.repo
+          yum clean expire-cache
+          yum install salt-minion -y
+  install-saltstack-redhat:
+    steps:
+      - run: |
+          rpm --import https://repo.saltproject.io/salt/py3/fedora/38/x86_64/SALT-PROJECT-GPG-PUBKEY-2023.pub
+          curl -fsSL https://repo.saltproject.io/salt/py3/fedora/38/x86_64/latest.repo | tee /etc/yum.repos.d/salt.repo
+          yum clean expire-cache
+          yum install salt-minion -y
+  install-saltstack-debian:
+    steps:
+      - run: |
+          curl -fsSL -o /etc/apt/keyrings/salt-archive-keyring-2023.gpg https://repo.saltproject.io/salt/py3/debian/10/amd64/SALT-PROJECT-GPG-PUBKEY-2023.gpg
+          echo "deb [signed-by=/etc/apt/keyrings/salt-archive-keyring-2023.gpg arch=amd64] https://repo.saltproject.io/salt/py3/debian/10/amd64/latest buster main" | tee /etc/apt/sources.list.d/salt.list
+          apt-get update
+          apt-get install salt-minion -y
+
+  prepare-saltstack:
+    steps:
+      - run: |
+          sudo mkdir -p /srv/salt && sudo cp -r ./uamsclient/* /srv/salt/
+          sudo mkdir -p /srv/pillar && sudo cp -r ./test/pillar/* /srv/pillar/
+  prepare-saltstack-container:
+    steps:
+      - run: |
+          mkdir -p /srv/salt && cp -r ./uamsclient/* /srv/salt/
+          mkdir -p /srv/pillar && cp -r ./test/pillar/* /srv/pillar/
+
+  test-saltstack:
+    steps:
+      - run: |
+          sudo salt-call --local test.ping
+  test-saltstack-container:
+    steps:
+      - run: |
+          salt-call --local test.ping
+
+  install-client:
+    steps:
+      - run: |
+          sudo salt-call --local state.apply install -l debug
+  install-client-container:
+    steps:
+      - run: |
+          salt-call --local state.apply install pillar='{"is_container": "true"}' -l debug || true
+
+jobs:
+  run-ubuntu-vm:
+    description: Install VM
+    machine:
+        image: ubuntu-2004:current
+    steps:
+      - checkout
+      - prepare-saltstack
+      - install-saltstack-script-vm
+      - test-saltstack
+      - install-client
+      - verify-install-vm
+
+  run-ubuntu-docker:
+    description: Install Docker
+    docker:
+      - image: ubuntu:focal
+    steps:
+      - checkout
+      - prepare-saltstack-container
+      - prepare-docker-ubuntu
+      - install-saltstack-script
+      - test-saltstack-container
+      - install-client-container
+      - verify-install-container
+
+
+  run-ubuntu-lunar:
+    docker:
+      - image: ubuntu:lunar
+    steps:
+      - checkout
+      - prepare-saltstack-container
+      - prepare-docker-ubuntu
+      - install-saltstack-ubuntu
+      - test-saltstack-container
+      - install-client-container
+      - verify-install-container
+
+  run-ubuntu-jammy:
+    docker:
+      - image: ubuntu:jammy
+    steps:
+      - checkout
+      - prepare-docker-ubuntu
+      - install-saltstack-script
+      - prepare-saltstack-container
+      - test-saltstack-container
+      - install-client-container
+      - verify-install-container
+
+  run-debian-stretch:
+    docker:
+      - image: debian:stretch
+    steps:
+      - checkout
+      - prepare-docker-debian-stretch
+      - install-saltstack-debian
+      - prepare-saltstack-container
+      - test-saltstack-container
+      - install-client-container
+      - verify-install-container
+
+  run-debian-bullseye:
+    docker:
+      - image: debian:bullseye
+    steps:
+      - checkout
+      - prepare-docker-debian
+      - install-saltstack-script
+      - prepare-saltstack-container
+      - test-saltstack-container
+      - install-client-container
+      - verify-install-container
+
+  run-debian-bookworm:
+    docker:
+      - image: debian:bookworm
+    steps:
+      - checkout
+      - prepare-saltstack-container
+      - prepare-docker-debian
+      - install-saltstack-debian
+      - test-saltstack-container
+      - install-client-container
+      - verify-install-container
+
+  run-centos-8:
+    docker:
+      - image: centos:centos8
+    steps:
+      - checkout
+      - prepare-docker-centos
+      - install-saltstack-script
+      - prepare-saltstack-container
+      - test-saltstack-container
+      - install-client-container
+      - verify-install-container
+
+  run-fedora-32:
+    docker:
+      - image: fedora:32
+    steps:
+      - checkout
+      - install-saltstack-fedora
+      - prepare-saltstack-container
+      - test-saltstack-container
+      - install-client-container
+      - verify-install-container
+
+  run-fedora-36:
+    docker:
+      - image: fedora:36
+    steps:
+      - checkout
+      - install-saltstack-fedora
+      - prepare-saltstack-container
+      - test-saltstack-container
+      - install-client-container
+      - verify-install-container
+
+  run-fedora-38:
+    docker:
+      - image: fedora:38
+    steps:
+      - checkout
+      - prepare-saltstack-container
+      - install-saltstack-fedora
+      - test-saltstack-container
+      - install-client-container
+      - verify-install-container
+
+  run-kali:
+    docker:
+      - image: kalilinux/kali-last-release
+    steps:
+      - checkout
+      - prepare-docker-ubuntu
+      - install-saltstack-debian
+      - prepare-saltstack-container
+      - test-saltstack-container
+      - install-client-container
+      - verify-install-container
+
+  run-oracle-8:
+    docker:
+      - image: oraclelinux:8
+    steps:
+      - checkout
+      - prepare-saltstack-container
+      - install-saltstack-redhat
+      - test-saltstack-container
+      - install-client-container
+      - verify-install-container
+
+  run-oracle-9:
+    docker:
+      - image: oraclelinux:9
+    steps:
+      - checkout
+      - prepare-docker-centos
+      - install-saltstack-script
+      - prepare-saltstack-container
+      - test-saltstack-container
+      - install-client-container
+      - verify-install-container
+
+workflows:
+  test-and-uamsclient-formula: 
+    jobs:
+      - run-ubuntu-vm
+      - run-ubuntu-docker
+      - run-ubuntu-lunar
+      - run-ubuntu-jammy
+      - run-debian-stretch
+      - run-debian-bullseye
+      - run-debian-bookworm
+      - run-centos-8
+      - run-fedora-32
+      - run-fedora-36
+      - run-fedora-38
+      - run-kali
+      - run-oracle-8
+      - run-oracle-9

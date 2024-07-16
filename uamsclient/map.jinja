@@ -1,0 +1,36 @@
+{% import_yaml 'defaults.yaml' as defaults %}
+{% import_yaml 'osfamilymap.yaml' as osfamilymap %}
+
+{%- set grains = salt['grains.items']() %}
+{%- set os_family = grains['os_family'] %}
+{%- set os_name = grains['os'] %}
+{%- set os_major_version = grains['osmajorrelease'] %}
+
+{%- if os_name in ['Debian', 'Ubuntu', 'Kali'] %}
+{%-   set pkg_type = 'deb' %}
+{%-   set pkg_manager = 'apt' %}
+{%- elif os_name in ['RedHat', 'CentOS', 'Fedora', 'OEL', 'Amazon', 'Rocky'] %}
+{%-   set pkg_type = 'rpm' %}
+{%-   if os_name == 'Fedora' or (os_name in ['CentOS', 'RedHat'] and os_major_version | int > 7) or (os_name == 'Amazon' and os_major_version | int > 2000) %}
+{%-     set pkg_manager = 'dnf' %}
+{%-   elif os_name in ['OracleLinux', 'Rocky', 'OEL'] or (os_name in ['CentOS', 'RedHat'] and os_major_version | int < 8) or (os_name == 'Amazon' and os_major_version | int < 2000) %}
+{%-     set pkg_manager = 'yum' %}
+{%-   else %}
+{%-     set pkg_manager = 'undefined' %}
+{%-   endif %}
+{%- else %}
+{%-    set pkg_manager = 'undefined' %}   
+{%- endif %}
+
+
+
+{% set config = salt['grains.filter_by'](
+    defaults,
+    merge = salt['grains.filter_by'](
+        osfamilymap,
+        grain='os_family',
+        merge = salt['pillar.get']('config', {})
+        ),
+    base='config'
+    )
+%}
