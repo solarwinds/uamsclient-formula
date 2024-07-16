@@ -29,7 +29,7 @@ Uninstalls the uamsclient package. WIP.
 
 See pillar.example for example configuration.
 
-To deploy UAMS Client on hosts, add `access token`, `role` and `swo url` to your playbook under the environment key.
+To deploy UAMS Client on hosts, add `uams_access_token`, `role` and `swo_url` to your pillar.
 
 * uams_access_token: UAMS access token taken from SWO Observability platform
 * swo_url: UAMS Cluster domain name

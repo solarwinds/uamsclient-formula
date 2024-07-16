@@ -2,7 +2,7 @@
 
 {% set uams_access_token = salt['pillar.get']('uamsclient:uams_access_token', 'n/a') %}
 {% set swo_url = salt['pillar.get']('uamsclient:swo_url', 'na-01.cloud.solarwinds.com') %}
-{% set uams_metadata = salt['pillar.get']('uamsclient:uams_metadata', 'n/a') %}
+{% set uams_metadata = salt['pillar.get']('uamsclient:uams_metadata', None) %}
 {% set uams_https_proxy = salt['pillar.get']('uamsclient:uams_https_proxy', None) %}
 {% set is_container = salt['pillar.get']('is_container', 'false') %}
 
@@ -35,7 +35,14 @@ setting_envs:
      - value:
          UAMS_ACCESS_TOKEN: {{ uams_access_token }}
          SWO_URL: {{ swo_url }}
+
+{%- if uams_metadata %}
+setting_uams_metadata:
+   environ.setenv:
+     - name: setting_envs
+     - value:
          UAMS_METADATA: {{ uams_metadata }}
+{%- endif %}
 
 {%- if uams_https_proxy %}
 setting_https_proxy:
