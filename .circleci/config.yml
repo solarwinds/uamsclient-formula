@@ -86,12 +86,12 @@ commands:
   prepare-saltstack:
     steps:
       - run: |
-          sudo mkdir -p /srv/salt && sudo cp -r ./uamsclient/* /srv/salt/
+          sudo mkdir -p /srv/salt && sudo cp -r ./uamsclient/* /srv/salt/uamsclient/
           sudo mkdir -p /srv/pillar && sudo cp -r ./test/pillar/* /srv/pillar/
   prepare-saltstack-container:
     steps:
       - run: |
-          mkdir -p /srv/salt && cp -r ./uamsclient/* /srv/salt/
+          mkdir -p /srv/salt && cp -r ./uamsclient/* /srv/salt/uamsclient/
           mkdir -p /srv/pillar && cp -r ./test/pillar/* /srv/pillar/
 
   test-saltstack:
