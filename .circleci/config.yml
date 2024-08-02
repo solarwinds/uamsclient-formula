@@ -86,12 +86,12 @@ commands:
   prepare-saltstack:
     steps:
       - run: |
-          sudo mkdir -p /srv/salt && sudo cp -r ./uamsclient/* /srv/salt/
+          sudo mkdir -p /srv/salt/uamsclient && sudo cp -r ./uamsclient/* /srv/salt/uamsclient/
           sudo mkdir -p /srv/pillar && sudo cp -r ./test/pillar/* /srv/pillar/
   prepare-saltstack-container:
     steps:
       - run: |
-          mkdir -p /srv/salt && cp -r ./uamsclient/* /srv/salt/
+          mkdir -p /srv/salt/uamsclient && cp -r ./uamsclient/* /srv/salt/uamsclient/
           mkdir -p /srv/pillar && cp -r ./test/pillar/* /srv/pillar/
 
   test-saltstack:
@@ -106,11 +106,11 @@ commands:
   install-client:
     steps:
       - run: |
-          sudo salt-call --local state.apply install -l debug
+          sudo salt-call --local state.apply uamsclient.install -l debug
   install-client-container:
     steps:
       - run: |
-          salt-call --local state.apply install pillar='{"is_container": "true"}' -l debug || true
+          salt-call --local state.apply uamsclient.install pillar='{"is_container": "true"}' -l debug || true
 
 jobs:
   run-ubuntu-vm:

@@ -1,13 +1,14 @@
-{% from "map.jinja" import pkg_manager, pkg_type, config with context %}
+{% from "uamsclient/map.jinja" import pkg_manager, pkg_type, config with context %}
 
 {% set uams_access_token = salt['pillar.get']('uamsclient:uams_access_token', 'n/a') %}
 {% set swo_url = salt['pillar.get']('uamsclient:swo_url', 'na-01.cloud.solarwinds.com') %}
 {% set uams_metadata = salt['pillar.get']('uamsclient:uams_metadata', None) %}
 {% set uams_https_proxy = salt['pillar.get']('uamsclient:uams_https_proxy', None) %}
+{% set uams_override_hostname = salt['pillar.get']('uamsclient:uams_override_hostname', None) %}
 {% set is_container = salt['pillar.get']('is_container', 'false') %}
 
 include:
-  - validation 
+  - uamsclient.validation
 
 {% if uams_access_token | length < 70 %}
 failure:
@@ -50,6 +51,14 @@ setting_https_proxy:
      - name: setting_envs
      - value:
          UAMS_HTTPS_PROXY: {{ uams_https_proxy }}
+{%- endif %}
+
+{%- if uams_override_hostname %}
+setting_override_hostname:
+   environ.setenv:
+     - name: setting_envs
+     - value:
+         UAMS_OVERRIDE_HOSTNAME: {{ uams_override_hostname }}
 {%- endif %}
 
 install_uamsclient:

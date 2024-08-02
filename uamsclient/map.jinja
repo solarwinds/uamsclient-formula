@@ -1,5 +1,5 @@
-{% import_yaml 'defaults.yaml' as defaults %}
-{% import_yaml 'osfamilymap.yaml' as osfamilymap %}
+{% import_yaml 'uamsclient/defaults.yaml' as defaults %}
+{% import_yaml 'uamsclient/osfamilymap.yaml' as osfamilymap %}
 
 {%- set grains = salt['grains.items']() %}
 {%- set os_family = grains['os_family'] %}

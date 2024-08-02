@@ -1,4 +1,4 @@
-{% from "map.jinja" import pkg_manager, pkg_type, config with context %}
+{% from "uamsclient/map.jinja" import pkg_manager, pkg_type, config with context %}
 
 print_config_variables:
   cmd.run:
@@ -23,16 +23,16 @@ print_config_variables:
 
 debug_variables:
   cmd.run:
-    - name: echo "DEBUG, PKG> {{ pkg_manager }}, TYPE> {{ pkg_type }}, FULL_NAME> {{ os_full_name }}, MAJOR> {{ os_major_release }}, OS_NAME> {{ os_name }} "
+    - name: echo "pkg_manager {{ pkg_manager }}, pkg_type {{ pkg_type }}, os_full_name {{ os_full_name }}, os_major_release {{ os_major_release }}, os_name {{ os_name }} "
 
 {% if os_name in supported_distros.keys() and os_major_release >= supported_distros[os_name] %}
 print_supported:
   cmd.run:
-    - name: echo "Supported, {{ os_full_name }}, {{os_major_release}}"
+    - name: echo "Supported, {{ os_full_name }}, {{ os_major_release }}"
 {% else %}
 print_unsupported:
   cmd.run:
-    - name: echo "Unsupported, {{ os_full_name }}, {{os_major_release}}"
+    - name: echo "Unsupported, {{ os_full_name }}, {{ os_major_release }}"
 failure:
   test.fail_without_changes:
     - name: "OS not supported!"
