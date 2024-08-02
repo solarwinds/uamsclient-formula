@@ -35,7 +35,7 @@ To deploy UAMS Client on hosts, add `uams_access_token`, `role` and `swo_url` to
 * swo_url: UAMS Cluster domain name
 * uams_metadata: (optional) Can be used for setting UAMS Client role e.g.`role:host-monitoring`
 * uams_https_proxy: (optional) You have the option to set an HTTPS proxy through the use of the `UAMS_HTTPS_PROXY` environment variable. Simply define this variable to point to your desired HTTPS proxy. Remember that the `UAMS_HTTPS_PROXY` environmental variable sets HTTPS proxy only for the connections established by the UAMS Client and its plugins. To use HTTPS proxy during installation set up HTTPS proxy on your machine so that saltstack will be able to use it.
-* uams_override_hostname: (optional) A customer client hostname. It is required if you want to set a specific agent hostname. 
+* uams_override_hostname: (optional) A variable to set a custom Agent name. By default, Agent name is set to the hostname.
 
 Testing
 -------
