@@ -23,7 +23,7 @@ print_config_variables:
 
 debug_variables:
   cmd.run:
-    - name: echo "pkg_manager {{ pkg_manager }}, pkg_type {{ pkg_type }}, os_full_name {{ os_full_name }}, os_major_release {{ os_major_release }}, os_name {{ os_name }} "
+    - name: echo "pkg_manager {{ pkg_manager }}, pkg_type {{ pkg_type }}, os_name {{ os_full_name }}, os_major{{ os_major_release }}, os_name {{ os_name }}"
 
 {% if os_name in supported_distros.keys() and os_major_release >= supported_distros[os_name] %}
 print_supported:

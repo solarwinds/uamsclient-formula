@@ -20,7 +20,7 @@ failure:
 uams_local_pkg_path:
   file.directory:
     - name: {{ config.uams_local_pkg_path }}
-    - mode: 755
+    - mode: "0755"
     - makedirs: True
 
 download_installation_package:
