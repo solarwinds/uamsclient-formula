@@ -38,7 +38,7 @@ To deploy UAMS Client on hosts, add `uams_access_token`, `role` and `swo_url` to
 * uams_override_hostname: (optional) A variable to set a custom Agent name. By default, Agent name is set to the hostname.
 * uams_managed_locally: (optional) A variable is used to set Agent as managed locally through a configuration file.
 
-## Managed locally Agents
+## Locally managed Agents
 The Variable `uams_managed_locally` is used to configure the Agent to be managed locally through the configuration file. 
 It Is designed to allow configuration of the UAMS Agent locally, without necessity of adding integrations manually from SWO page.
 
