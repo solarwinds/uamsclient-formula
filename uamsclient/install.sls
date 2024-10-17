@@ -88,7 +88,7 @@ create_local_config_linux:
         data: {{ local_config_template_parameters }}
     - user: swagent
     - group: swagent
-    - mode: 644
+    - mode: "0644"
 
 {% endif %}
 
