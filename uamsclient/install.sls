@@ -5,6 +5,7 @@
 {% set uams_metadata = salt['pillar.get']('uamsclient:uams_metadata', None) %}
 {% set uams_https_proxy = salt['pillar.get']('uamsclient:uams_https_proxy', None) %}
 {% set uams_override_hostname = salt['pillar.get']('uamsclient:uams_override_hostname', None) %}
+{% set uams_managed_locally = salt['pillar.get']('uamsclient:uams_managed_locally', None) %}
 {% set is_container = salt['pillar.get']('is_container', 'false') %}
 
 include:
@@ -61,11 +62,35 @@ setting_override_hostname:
          UAMS_OVERRIDE_HOSTNAME: {{ uams_override_hostname }}
 {%- endif %}
 
+{%- if uams_managed_locally %}
+setting_uams_managed_locally:
+   environ.setenv:
+     - name: setting_envs
+     - value:
+         UAMS_MANAGED_LOCALLY: 'true'
+{%- endif %}
+
 install_uamsclient:
   pkg.installed:
     - sources:
       - uamsclient: "{{ config.uams_local_pkg_path }}/uamsclient.{{ pkg_type }}"
     - ignore: true
+
+{% if uams_managed_locally %}
+{% set local_config_template_parameters = salt['pillar.get']('local_config_template_parameters', None) %}
+
+create_local_config_linux:
+  file.managed:
+    - name: /opt/solarwinds/uamsclient/var/local_config.yaml
+    - source: salt://uamsclient/templates/template_local_config.yaml.j2
+    - template: jinja
+    - context:
+        data: {{ local_config_template_parameters }}
+    - user: swagent
+    - group: swagent
+    - mode: 644
+
+{% endif %}
 
 {% if is_container != 'true' %}
 uamsclient_service_running:
