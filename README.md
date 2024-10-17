@@ -45,7 +45,7 @@ It is designed to allow configuration of the UAMS Agent locally, without necessi
 If the UAMS Agent gets installed as a **locally managed** agent then it will wait for the local configuration file to be accessible. The default local configuration is `/opt/solarwinds/uamsclient/var/local_config.yaml`
 
 SaltStack will automatically create the file in the needed location. 
-The default template of local config file is located at `templates/template_local_config.yaml.j2`.
+The default template of the local config file is located at `templates/template_local_config.yaml.j2`.
 
 You can use jinja2 template syntax to fill the template with appropriate variables.
 To assign values to variables in the template you can use pillar variable `local_config_template_parameters` as in the example below.
