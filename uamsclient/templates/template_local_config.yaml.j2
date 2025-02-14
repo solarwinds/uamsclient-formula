@@ -2,3 +2,13 @@
 integrations:
   otel/hostmetrics:
     - name: host-monitoring
+  dbo/mysql:
+    - name: off-host-mysql
+      host: {{ data.mysql_host }}
+      port: 3306
+      user: {{ data.mysql_user }}
+      password:
+        value-from:
+          provider: aws-secrets-manager
+          secret-name: {{ data.secret_name }}
+      packet-capture-enabled: false
