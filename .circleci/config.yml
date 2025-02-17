@@ -13,14 +13,13 @@ commands:
   install-saltstack-script-vm:
     steps:
       - run: |
-          curl -o bootstrap-salt.sh -L https://bootstrap.saltproject.io
+          curl -o bootstrap-salt.sh -L https://github.com/saltstack/salt-bootstrap/releases/latest/download/bootstrap-salt.sh
           chmod +x bootstrap-salt.sh
           sudo ./bootstrap-salt.sh -M -X
   install-saltstack-fedora:
     steps:
       - run: |
-          rpm --import https://repo.saltproject.io/salt/py3/fedora/38/x86_64/SALT-PROJECT-GPG-PUBKEY-2023.pub
-          curl -fsSL https://repo.saltproject.io/salt/py3/fedora/38/x86_64/latest.repo | tee /etc/yum.repos.d/salt.repo
+          curl -fsSL https://github.com/saltstack/salt-install-guide/releases/latest/download/salt.repo | sudo tee /etc/yum.repos.d/salt.repo
           yum clean expire-cache
           yum install salt-minion -y
   prepare-saltstack:
