@@ -4,7 +4,7 @@ Install and configure uamsclient.
 See the full [Salt Formulas installation and usage instructions](http://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html).
 
 If you are interested in writing or contributing to formulas, please pay attention to the `Writing Formula` section
-<https://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html#writing-formulas>.
+<https://docs.saltproject.io/en/master/topics/development/conventions/formulas.html#writing-formulas>.
 
 ## Available states
 
@@ -63,8 +63,8 @@ uamsclient:
   uams_metadata: 'role:host-monitoring'
   uams_managed_locally: true
 local_config_template_parameters:
-  mysql_host: host
-  mysql_user: juser
+  mysql_host: my-host
+  mysql_user: my-user
   secret_name: my-secret
 credentials_config_template_parameters:
   access_key_id: your-access-key-id
