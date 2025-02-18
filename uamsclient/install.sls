@@ -78,6 +78,7 @@ install_uamsclient:
 
 {% if uams_managed_locally %}
 {% set local_config_template_parameters = salt['pillar.get']('local_config_template_parameters', None) %}
+{% set credentials_config_template_parameters = salt['pillar.get']('credentials_config_template_parameters', None) %}
 
 create_local_config_linux:
   file.managed:
@@ -88,7 +89,18 @@ create_local_config_linux:
         data: {{ local_config_template_parameters }}
     - user: swagent
     - group: swagent
-    - mode: "0644"
+    - mode: "0660"
+
+create_credentials_config_linux:
+  file.managed:
+    - name: /opt/solarwinds/uamsclient/var/credentials_config.yaml
+    - source: salt://uamsclient/templates/template_credentials_config.yaml.j2
+    - template: jinja
+    - context:
+        data: {{ credentials_config_template_parameters }}
+    - user: swagent
+    - group: swagent
+    - mode: "0660"
 
 {% endif %}
 
