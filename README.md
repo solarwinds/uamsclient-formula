@@ -1,10 +1,10 @@
 # uamsclient formula
 Install and configure uamsclient.
 
-See the full [Salt Formulas installation and usage instructions](http://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html).
+See the full [Salt Formulas installation and usage instructions](https://docs.saltproject.io/en/latest/topics/development/conventions/formulas.html).
 
 If you are interested in writing or contributing to formulas, please pay attention to the `Writing Formula` section
-<https://docs.saltproject.io/en/master/topics/development/conventions/formulas.html#writing-formulas>.
+<https://docs.saltproject.io/en/latest/topics/development/conventions/formulas.html#writing-formulas>.
 
 ## Available states
 
