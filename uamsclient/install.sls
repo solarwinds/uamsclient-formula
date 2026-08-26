@@ -38,13 +38,11 @@ setting_envs:
          UAMS_ACCESS_TOKEN: {{ uams_access_token }}
          SWO_URL: {{ swo_url }}
 
-{%- if uams_metadata %}
 setting_uams_metadata:
-   environ.setenv:
-     - name: setting_envs
-     - value:
-         UAMS_METADATA: {{ uams_metadata }}
-{%- endif %}
+  environ.setenv:
+    - name: setting_envs
+    - value:
+        UAMS_METADATA: "{{ uams_metadata + ',provisioner:saltstack' if uams_metadata else 'provisioner:saltstack' }}"
 
 {%- if uams_https_proxy %}
 setting_https_proxy:
@@ -77,8 +75,8 @@ install_uamsclient:
     - ignore: true
 
 {% if uams_managed_locally %}
-{% set local_config_template_parameters = salt['pillar.get']('local_config_template_parameters', None) %}
-{% set credentials_config_template_parameters = salt['pillar.get']('credentials_config_template_parameters', None) %}
+{% set local_config_template_parameters = salt['pillar.get']('local_config_template_parameters', {}) %}
+{% set credentials_config_template_parameters = salt['pillar.get']('credentials_config_template_parameters', {}) %}
 
 create_local_config_linux:
   file.managed:
