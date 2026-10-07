@@ -6,6 +6,10 @@
 {%- set os_name = grains['os'] %}
 {%- set os_major_version = grains['osmajorrelease'] %}
 
+{%- set agent_requirements_docs_url = 'https://documentation.solarwinds.com/en/success_center/observability/content/system_requirements/agent_requirements.htm' %}
+{%- set unsupported_os_msg = 'The SolarWinds UAMS Client does not support your operating system. Supported operating systems are defined in the official documentation: ' ~ agent_requirements_docs_url %}
+{%- set unsupported_os_version_msg = 'This operating system version is not supported. Supported operating system versions are defined in the official documentation: ' ~ agent_requirements_docs_url %}
+
 {%- if os_name in ['Debian', 'Ubuntu', 'Kali'] %}
 {%-   set pkg_type = 'deb' %}
 {%-   set pkg_manager = 'apt' %}

@@ -1,4 +1,4 @@
-{% from "uamsclient/map.jinja" import pkg_manager, pkg_type, config with context %}
+{% from "uamsclient/map.jinja" import pkg_manager, pkg_type, config, unsupported_os_msg, unsupported_os_version_msg with context %}
 
 print_config_variables:
   cmd.run:
@@ -35,6 +35,6 @@ print_unsupported:
     - name: echo "Unsupported, {{ os_full_name }}, {{ os_major_release }}"
 failure:
   test.fail_without_changes:
-    - name: "OS not supported!"
+    - name: {{ (unsupported_os_msg if os_name not in supported_distros else unsupported_os_version_msg) | tojson }}
     - failhard: True
 {% endif %}
