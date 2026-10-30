@@ -42,7 +42,7 @@ setting_uams_metadata:
   environ.setenv:
     - name: setting_envs
     - value:
-        UAMS_METADATA: "{{ uams_metadata + ',provisioner:saltstack' if uams_metadata else 'provisioner:saltstack' }}"
+        UAMS_METADATA: "{{ uams_metadata + ',provisioner:saltproject' if uams_metadata else 'provisioner:saltproject' }}"
 
 {%- if uams_https_proxy %}
 setting_https_proxy:
