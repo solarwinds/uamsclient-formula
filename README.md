@@ -33,7 +33,7 @@ To deploy UAMS Client on hosts, add `uams_access_token`, `role`, and `swo_url` t
 * uams_access_token: UAMS access token taken from the SWO Observability platform
 * swo_url: UAMS Cluster domain name
 * uams_metadata: (optional) Can be used for setting UAMS Client role, e.g., `role:host-monitoring`
-* uams_https_proxy: (optional) You have the option to set an HTTPS proxy through the use of the `UAMS_HTTPS_PROXY` environment variable. Simply define this variable to point to your desired HTTPS proxy. Remember that the `UAMS_HTTPS_PROXY` environment variable sets HTTPS proxy only for the connections established by the UAMS Client and its plugins. To use HTTPS proxy during installation, set up HTTPS proxy on your machine so that SaltStack will be able to use it.
+* uams_https_proxy: (optional) You have the option to set an HTTPS proxy through the use of the `UAMS_HTTPS_PROXY` environment variable. Simply define this variable to point to your desired HTTPS proxy. Remember that the `UAMS_HTTPS_PROXY` environment variable sets HTTPS proxy only for the connections established by the UAMS Client and its plugins. To use HTTPS proxy during installation, set up HTTPS proxy on your machine so that Salt Project will be able to use it.
 * uams_override_hostname: (optional) A variable to set a custom Agent name. By default, the Agent name is set to the hostname.
 * uams_managed_locally: (optional) A variable used to set the Agent as managed locally through a configuration file.
 
@@ -45,7 +45,7 @@ If the UAMS Agent gets installed as a **locally managed** agent, then it will wa
 
 An additional optional configuration file `credentials_config.yaml` can be used to define credentials providers. This file can be used in conjunction with `local_config.yaml` to retrieve a credential from a defined credential provider.
 
-SaltStack will automatically create both files (`credentials_config.yaml` and `local_config.yaml`) in the needed location.
+Salt Project will automatically create both files (`credentials_config.yaml` and `local_config.yaml`) in the needed location.
 
 You can find default templates for these files in the locations:
 - `local_config.yaml`: `templates/template_local_config.yaml.j2`
